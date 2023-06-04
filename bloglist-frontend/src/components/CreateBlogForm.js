@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import blogService from '../services/blogs'
 
-const CreateBlogForm = ({ blogs, setBlogs }) => {
+const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -15,7 +15,7 @@ const CreateBlogForm = ({ blogs, setBlogs }) => {
       author: author,
       url: url
     }
-
+    createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
     blogService
       .create(blogObject)
       .then(returnedBlog => {
@@ -24,12 +24,11 @@ const CreateBlogForm = ({ blogs, setBlogs }) => {
         setAuthor('')
         setUrl('')
       })
+    
   }
 
   return (
     <>
-
-
       <form onSubmit={addBlog}>
         <div>
           <h2>create new</h2>
