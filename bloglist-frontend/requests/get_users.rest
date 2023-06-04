@@ -1,0 +1,27 @@
+GET http://localhost:3003/api/users
+
+###
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "name": "admin aapo, salasana on pass",
+  "password": "pass"
+}
+
+
+###
+
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "pass"
+}
+
+###
+
+GET http://localhost:3003/api/blogs

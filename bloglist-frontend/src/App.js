@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import LoginForm from './components/LoginForm'
+import Logoutbutton from './components/LogoutButton'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import LoginForm from './components/LoginForm'
+
+import ActionMessage from './components/ActionMessage'
 
 
 const App = () => {
@@ -10,12 +13,46 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [TextAndCss, setTextAndCss] = useState({
+    text: '',
+    css: ''
+  })
 
+  // Retrieves blogs on the first page load
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
   }, [])
+
+  // Checks if localStorage already has login info
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+    }
+  }, [])
+
+  // Empties login info from localStorage and removes user
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
+
+  const createNotificationMessage = (text, color, name) => {
+    setTextAndCss({
+      text: `${text} ${name || ''}`,
+      css: color
+
+    })
+    setTimeout(() => {
+      setTextAndCss({
+        text: '',
+        css: ''
+      })
+    }, 5000)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -23,20 +60,23 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
       setUser(user)
       setUsername('')
       setPassword('')
+      // createNotificationMessage('Logged in user', 'green', username)
     } catch (exception) {
       console.log('wrong creds')
-      // setErrorMessage('wrong credentials')
-      // setTimeout(() => {
-      //   setErrorMessage(null)
-      // }, 5000)
+      createNotificationMessage('Login failed', 'red')
     }
   }
 
   return (
     <div>
+      <ActionMessage message={TextAndCss} />
       {!user && (
       <LoginForm
       handleLogin={handleLogin}
@@ -49,6 +89,7 @@ const App = () => {
 {user && (
   <div>
     <h2>blogs</h2>
+    {<p>{user.name} logged in <Logoutbutton onLogout={handleLogout} /></p>}
     {blogs.map(blog => (
       <Blog key={blog.id} blog={blog} />
     ))}
