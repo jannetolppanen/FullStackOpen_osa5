@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Logoutbutton from './components/LogoutButton'
+// import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -40,6 +41,72 @@ const App = () => {
     setUser(null)
   }
 
+  const CreateBlogForm = ({ blogs, setBlogs }) => {
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+  
+    const addBlog = (event) => {
+      event.preventDefault()
+      console.log('blogpost')
+  
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url
+      }
+  
+      blogService
+        .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+          setTitle('')
+          setAuthor('')
+          setUrl('')
+        })
+    }
+  
+    return (
+      <>
+        <form onSubmit={addBlog}>
+          <div>
+            <h2>create new</h2>
+            title:
+            <input
+              type="text"
+              value={title}
+              name="Title"
+              onChange={({ target }) => setTitle(target.value)}
+            />
+          </div>
+  
+          <div>
+            author:
+            <input
+              type="text"
+              value={author}
+              name="Author"
+              onChange={({ target }) => setAuthor(target.value)}
+            />
+          </div>
+  
+          <div>
+            url:
+            <input
+              type="text"
+              value={url}
+              name="Url"
+              onChange={({ target }) => setUrl(target.value)}
+            />
+          </div>
+  
+          <button type="submit">create</button>
+        </form>
+  
+      </>
+    )
+  }
+
   const createNotificationMessage = (text, color, name) => {
     setTextAndCss({
       text: `${text} ${name || ''}`,
@@ -56,6 +123,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
+    
     try {
       const user = await loginService.login({
         username, password,
@@ -64,6 +132,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -90,11 +159,14 @@ const App = () => {
   <div>
     <h2>blogs</h2>
     {<p>{user.name} logged in <Logoutbutton onLogout={handleLogout} /></p>}
+    <CreateBlogForm blogs={blogs} setBlogs={setBlogs} />
+
     {blogs.map(blog => (
       <Blog key={blog.id} blog={blog} />
     ))}
   </div>
 )}
+
     </div>
   )
 }
