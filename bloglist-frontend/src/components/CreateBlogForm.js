@@ -6,7 +6,7 @@ const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage, handleCrea
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     handleCreateNewBlog()
 
@@ -18,20 +18,17 @@ const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage, handleCrea
     setTitle('')
     setAuthor('')
     setUrl('')
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')      
+    try {
+      await blogService.create(blogObject)
+      createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
 
-      })
-      .catch(error => {
-        if (error.response && error.response.status === 400) {
-          createNotificationMessage('Error: Bad Request', 'red');
-        } 
-      })
-      
-    
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        createNotificationMessage('Error: Bad Request', 'red');
+      }
+    }
   }
 
   return (
