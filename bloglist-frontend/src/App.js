@@ -34,9 +34,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
     }
-  }, [])
-
-  
+  }, [])  
 
   // Empties login info from localStorage and removes user
   const handleLogout = () => {
@@ -51,6 +49,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
   }
 
+  // Creates config for notification messages
   const createNotificationMessage = (text, color, name) => {
     setTextAndCss({
       text: `${text} ${name || ''}`,
@@ -64,10 +63,8 @@ const App = () => {
       })
     }, 5000)
   }
-
-
-
-
+  
+  // Login handler
   const handleLogin = async (event) => {
     event.preventDefault()
     

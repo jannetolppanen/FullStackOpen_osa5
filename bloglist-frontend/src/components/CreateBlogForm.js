@@ -18,13 +18,13 @@ const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage, handleCrea
     setTitle('')
     setAuthor('')
     setUrl('')
-    createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+        setBlogs(blogs.concat(returnedBlog))       
 
       })
+      createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
     
   }
 
