@@ -5,64 +5,56 @@ const api = supertest(app)
 const User = require('../models/user')
 const logger = require('../utils/logger')
 
-const initialUser = {
-  "username": "test",
-  "name": "tim tester",
-  "password": "salasana"
-}
+const initialUsers = [
+  {
+    "username": "testuser1",
+    "name": "Test User 1",
+    "password": "P@ssw0rd123"
+  }
+  ,
+  {
+    "username": "testuser2",
+    "name": "Test User 2",
+    "password": "Testing123!"
+  }
+]
 
 beforeEach(async () => {
   await User.deleteMany({})
+  let userObject = new User(initialUsers[0])
+  await userObject.save()
+  userObject = new User(initialUsers[1])
+  await userObject.save()
 })
 
-describe('User requests', () => {
-  test('Creating a new user', async () => {
-    await User.deleteMany({})
-    const createUser = await api
-      .post('/api/users')
-      .send(initialUser)
-      .expect(201)
+describe('Creating users', () => {
 
-    const createdUser = createUser.body
-    const getUsers = await api
+  test('2 initial users are created', async () => {
+    const response = await api
       .get('/api/users')
-      .expect(200)
-    const users = getUsers.body
-    const exists = users.some((user) => user.username === createdUser.username)
-    expect(exists).toBe(true)
+
+    expect(response.body).toHaveLength(initialUsers.length)
   })
-
-  // test('Login with the test user', async () => {
-  //   const createUser = await api
-  //     .post('/api/users')
-  //     .send(initialUser)
-
-  //   const login = await api
-  //     .post('/api/login')
-  //     .send({
-  //       "username": initialUser.username,
-  //       "password": initialUser.password
-  //     })
-  //     .expect(200)
-  // })
 
   test('Duplicate users cant be created', async () => {
 
-    const createUser = await api
-      .post('/api/users')
-      .send(initialUser)
+    const duplicateUser = {
+      "username": "testuser1",
+      "name": "New name",
+      "password": "d123"
+    }
 
-      const createDuplicateUser = await api
+    const response = await api
       .post('/api/users')
-      .send(initialUser)
+      .send(duplicateUser)
       .expect(400)
 
-    expect(createDuplicateUser.body.error).toEqual(expect.stringContaining('User validation failed: username: Error'))
+      expect(response.body.error).toEqual(expect.stringContaining('User validation failed: username: Error'))
 
     const getResponse = await api
       .get('/api/users')
 
-    expect(getResponse.body).toHaveLength(1)
+    expect(getResponse.body).toHaveLength(initialUsers.length)
   })
 
   test('Password must be atleast 3 characters', async () => {
@@ -82,7 +74,7 @@ describe('User requests', () => {
 
     const getResponse = await api
       .get('/api/users')
-    expect(getResponse.body.length).toBe(0)
+    expect(getResponse.body.length).toBe(initialUsers.length)
   })
 
   test('Username must be atleast 3 characters', async () => {
@@ -101,8 +93,28 @@ describe('User requests', () => {
 
     const getResponse = await api
       .get('/api/users')
-    expect(getResponse.body.length).toBe(0)
+    expect(getResponse.body.length).toBe(initialUsers.length)
   })
+
+  test('A new user can be created', async () => {
+    const newUser = {
+      "username": "testuser3",
+      "name": "Test user3",
+      "password": "qwerty"
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+
+    const getResponse = await api
+      .get('/api/users')
+    expect(getResponse.body.length).toBe(initialUsers.length + 1)
+  })
+
+
+
 })
 
 afterAll(async () => {

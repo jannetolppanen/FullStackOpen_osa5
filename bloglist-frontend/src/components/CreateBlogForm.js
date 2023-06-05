@@ -21,10 +21,16 @@ const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage, handleCrea
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))       
+        setBlogs(blogs.concat(returnedBlog))
+        createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')      
 
       })
-      createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
+      .catch(error => {
+        if (error.response && error.response.status === 400) {
+          createNotificationMessage('Error: Bad Request', 'red');
+        } 
+      })
+      
     
   }
 
