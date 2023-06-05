@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Logoutbutton from './components/LogoutButton'
@@ -36,10 +36,19 @@ const App = () => {
     }
   }, [])
 
+  
+
   // Empties login info from localStorage and removes user
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  // Reference to Togglable
+  const blogFormRef = useRef()
+  // Closes blog creation form when new blog is submitted using blogFormRef
+  const handleCreateNewBlog = () => {
+    blogFormRef.current.toggleVisibility()
   }
 
   const createNotificationMessage = (text, color, name) => {
@@ -55,6 +64,9 @@ const App = () => {
       })
     }, 5000)
   }
+
+
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -73,7 +85,6 @@ const App = () => {
       setPassword('')
       createNotificationMessage('Logged in user', 'green', username)
     } catch (exception) {
-      console.log('wrong creds')
       createNotificationMessage('wrong username or password', 'red')
     }
   }
@@ -95,8 +106,9 @@ const App = () => {
   <div>
     <h2>blogs</h2>
     {<p>{user.name} logged in <Logoutbutton onLogout={handleLogout} /></p>}
-    <Togglable buttonLabel="new note">
-    <CreateBlogForm blogs={blogs} setBlogs={setBlogs} createNotificationMessage={createNotificationMessage} />
+
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+    <CreateBlogForm handleCreateNewBlog={handleCreateNewBlog} blogs={blogs} setBlogs={setBlogs} createNotificationMessage={createNotificationMessage} />
     </Togglable>
     {blogs.map(blog => (
       <Blog key={blog.id} blog={blog} />
