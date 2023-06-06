@@ -1,8 +1,9 @@
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike }) => {
   const [visible, setVisible] = useState(false)
 
+  // Blog css style
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,19 +12,22 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
 
-  const handleLike = () => {
-    console.log("liked")
+  // Like button calls likefunction at App.js with unique id
+  const Like = () => {
+    handleLike(blog.id)
   }
 
+  // Toggle fullinfo visibility
   const handleView = () => {
     setVisible(!visible)
   }
 
+  // Shows more info about the blog
   const fullInfo = () => {
     return (
       <>
         {blog.url}<br />
-        likes {blog.likes} <button onClick={handleLike}>like</button> <br />
+        likes {blog.likes} <button onClick={Like}>like</button> <br />
         {blog.user.name}
       </>
 

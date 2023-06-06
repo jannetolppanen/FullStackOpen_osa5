@@ -34,7 +34,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
     }
-  }, [])  
+  }, [])
 
   // Empties login info from localStorage and removes user
   const handleLogout = () => {
@@ -63,11 +63,11 @@ const App = () => {
       })
     }, 5000)
   }
-  
+
   // Login handler
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -86,32 +86,48 @@ const App = () => {
     }
   }
 
+  // Blog component calls this, sends new object to server and updates blogs
+  const handleLike = id => {
+    const blog = blogs.find(b => b.id === id)
+    const changedBlog = { ...blog, likes: blog.likes + 1}
+
+    blogService
+    .update(id, changedBlog)
+    .then(returnedBlog => {
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
+    })
+    .catch(() => {
+      createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
+      setBlogs(blogs.filter(b => b.id !== id))
+    })
+  }
+
   return (
     <div>
       <ActionMessage message={TextAndCss} />
 
       {!user && (
-      <LoginForm
-      handleLogin={handleLogin}
-      username={username}
-      setUsername={setUsername}
-      password={password}
-      setPassword={setPassword} />
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword} />
       )}
 
-{user && (
-  <div>
-    <h2>blogs</h2>
-    {<p>{user.name} logged in <Logoutbutton onLogout={handleLogout} /></p>}
+      {user && (
+        <div>
+          <h2>blogs</h2>
+          {<p>{user.name} logged in <Logoutbutton onLogout={handleLogout} /></p>}
 
-    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-    <CreateBlogForm handleCreateNewBlog={handleCreateNewBlog} blogs={blogs} setBlogs={setBlogs} createNotificationMessage={createNotificationMessage} />
-    </Togglable>
-    {blogs.map(blog => (
-      <Blog key={blog.id} blog={blog} />
-    ))}
-  </div>
-)}
+          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+            <CreateBlogForm handleCreateNewBlog={handleCreateNewBlog} blogs={blogs} setBlogs={setBlogs} createNotificationMessage={createNotificationMessage} />
+          </Togglable>
+          {blogs.map(blog => (
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+          ))}
+        </div>
+      )}
 
     </div>
   )
