@@ -130,8 +130,8 @@ const App = () => {
               key={blog.id} 
               blog={blog}
               blogs={blogs}
-              setBlogs={setBlogs} 
-              // handleLike={handleLike} />
+              setBlogs={setBlogs}
+              user={user}
               createNotificationMessage={createNotificationMessage}
               />
             ))}

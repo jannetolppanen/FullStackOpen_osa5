@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs, createNotificationMessage }) => {
+const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
   const [visible, setVisible] = useState(false)
 
   // Blog css style
@@ -14,11 +14,16 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage }) => {
     backgroundColor: '#f0f0f5'
   }
 
-  // Like button calls likefunction at App.js with unique id
+  const removeButtonStyle = {
+    backgroundColor: "red"
+  }
+
+  // Handles like button clicks
   const handleLike = () => {
     addLike(blog.id)
   }
 
+  // Add like to blogpost with certain id
   const addLike = id => {
     const blogObject = blogs.find(b => b.id === id)
     const changedBlog = { ...blogObject, likes: blogObject.likes + 1 }
@@ -34,6 +39,27 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage }) => {
       })
   }
 
+  // returns true if blogpost belongs to logged in user
+  const isBlogPostOwner = () => {
+    return blog.user.username === user.username
+  }
+
+  // Handles remove button clicks
+  const handleRemove = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      removeBlogPost(blog.id)
+    }
+  }
+
+  // Removes blogpost
+  const removeBlogPost = id => {
+    blogService
+      .remove(id, user.token)
+      .then(response => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+  }
+
   // Toggle fullinfo visibility
   const handleView = () => {
     setVisible(!visible)
@@ -45,9 +71,9 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage }) => {
       <>
         {blog.url}<br />
         likes {blog.likes} <button onClick={handleLike}>like</button> <br />
-        {blog.user.name}
+        {blog.user.name}<br />
+        {isBlogPostOwner() && <button style={removeButtonStyle} onClick={handleRemove}>remove</button>}
       </>
-
     )
   }
 
