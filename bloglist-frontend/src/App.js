@@ -89,17 +89,17 @@ const App = () => {
   // Blog component calls this, sends new object to server and updates blogs
   const handleLike = id => {
     const blog = blogs.find(b => b.id === id)
-    const changedBlog = { ...blog, likes: blog.likes + 1}
+    const changedBlog = { ...blog, likes: blog.likes + 1 }
 
     blogService
-    .update(id, changedBlog)
-    .then(returnedBlog => {
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
-    })
-    .catch(() => {
-      createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
-      setBlogs(blogs.filter(b => b.id !== id))
-    })
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
+      })
+      .catch(() => {
+        createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
+        setBlogs(blogs.filter(b => b.id !== id))
+      })
   }
 
   return (
@@ -123,9 +123,11 @@ const App = () => {
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <CreateBlogForm handleCreateNewBlog={handleCreateNewBlog} blogs={blogs} setBlogs={setBlogs} createNotificationMessage={createNotificationMessage} />
           </Togglable>
-          {blogs.map(blog => (
-            <Blog key={blog.id} blog={blog} handleLike={handleLike} />
-          ))}
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map(blog => (
+              <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+            ))}
         </div>
       )}
 
