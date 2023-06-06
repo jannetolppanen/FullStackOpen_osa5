@@ -1,6 +1,7 @@
 import { useState } from "react"
+import blogService from '../services/blogs'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, blogs, setBlogs, createNotificationMessage }) => {
   const [visible, setVisible] = useState(false)
 
   // Blog css style
@@ -9,12 +10,28 @@ const Blog = ({ blog, handleLike }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    backgroundColor: '#f0f0f5'
   }
 
   // Like button calls likefunction at App.js with unique id
-  const Like = () => {
-    handleLike(blog.id)
+  const handleLike = () => {
+    addLike(blog.id)
+  }
+
+  const addLike = id => {
+    const blogObject = blogs.find(b => b.id === id)
+    const changedBlog = { ...blogObject, likes: blogObject.likes + 1 }
+
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
+      })
+      .catch(() => {
+        createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
+        setBlogs(blogs.filter(b => b.id !== id))
+      })
   }
 
   // Toggle fullinfo visibility
@@ -27,7 +44,7 @@ const Blog = ({ blog, handleLike }) => {
     return (
       <>
         {blog.url}<br />
-        likes {blog.likes} <button onClick={Like}>like</button> <br />
+        likes {blog.likes} <button onClick={handleLike}>like</button> <br />
         {blog.user.name}
       </>
 

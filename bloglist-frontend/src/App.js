@@ -87,20 +87,20 @@ const App = () => {
   }
 
   // Blog component calls this, sends new object to server and updates blogs
-  const handleLike = id => {
-    const blog = blogs.find(b => b.id === id)
-    const changedBlog = { ...blog, likes: blog.likes + 1 }
+  // const handleLike = id => {
+  //   const blog = blogs.find(b => b.id === id)
+  //   const changedBlog = { ...blog, likes: blog.likes + 1 }
 
-    blogService
-      .update(id, changedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
-      })
-      .catch(() => {
-        createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
-        setBlogs(blogs.filter(b => b.id !== id))
-      })
-  }
+  //   blogService
+  //     .update(id, changedBlog)
+  //     .then(returnedBlog => {
+  //       setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
+  //     })
+  //     .catch(() => {
+  //       createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
+  //       setBlogs(blogs.filter(b => b.id !== id))
+  //     })
+  // }
 
   return (
     <div>
@@ -126,7 +126,14 @@ const App = () => {
           {blogs
             .sort((a, b) => b.likes - a.likes)
             .map(blog => (
-              <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+              <Blog 
+              key={blog.id} 
+              blog={blog}
+              blogs={blogs}
+              setBlogs={setBlogs} 
+              // handleLike={handleLike} />
+              createNotificationMessage={createNotificationMessage}
+              />
             ))}
         </div>
       )}
