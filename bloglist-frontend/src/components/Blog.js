@@ -30,7 +30,7 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
 
     blogService
       .update(id, changedBlog)
-      .then(returnedBlog => {
+      .then(() => {
         setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
       })
       .catch(() => {
@@ -55,7 +55,7 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
   const removeBlogPost = id => {
     blogService
       .remove(id, user.token)
-      .then(response => {
+      .then(() => {
         setBlogs(blogs.filter(blog => blog.id !== id))
       })
   }
