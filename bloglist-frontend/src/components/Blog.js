@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
@@ -15,7 +15,7 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
   }
 
   const removeButtonStyle = {
-    backgroundColor: "red"
+    backgroundColor: 'red'
   }
 
   // Handles like button clicks

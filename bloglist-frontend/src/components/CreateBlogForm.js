@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage, handleCreateNewBlog }) => {
+const CreateBlogForm = ({ setBlogs, createNotificationMessage, handleCreateNewBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -26,7 +26,7 @@ const CreateBlogForm = ({ blogs, setBlogs, createNotificationMessage, handleCrea
       setBlogs(blogs)
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        createNotificationMessage('Error: Bad Request', 'red');
+        createNotificationMessage('Error: Bad Request', 'red')
       }
     }
   }

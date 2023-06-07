@@ -9,7 +9,6 @@ import loginService from './services/login'
 
 import ActionMessage from './components/ActionMessage'
 
-
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -17,14 +16,12 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [TextAndCss, setTextAndCss] = useState({
     text: '',
-    css: ''
+    css: '',
   })
 
   // Retrieves blogs on the first page load
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
   // Checks if localStorage already has login info
@@ -53,13 +50,12 @@ const App = () => {
   const createNotificationMessage = (text, color, name) => {
     setTextAndCss({
       text: `${text} ${name || ''}`,
-      css: color
-
+      css: color,
     })
     setTimeout(() => {
       setTextAndCss({
         text: '',
-        css: ''
+        css: '',
       })
     }, 5000)
   }
@@ -70,12 +66,11 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
 
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -112,32 +107,41 @@ const App = () => {
           username={username}
           setUsername={setUsername}
           password={password}
-          setPassword={setPassword} />
+          setPassword={setPassword}
+        />
       )}
 
       {user && (
         <div>
           <h2>blogs</h2>
-          {<p>{user.name} logged in <Logoutbutton onLogout={handleLogout} /></p>}
+          {
+            <p>
+              {user.name} logged in <Logoutbutton onLogout={handleLogout} />
+            </p>
+          }
 
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <CreateBlogForm handleCreateNewBlog={handleCreateNewBlog} blogs={blogs} setBlogs={setBlogs} createNotificationMessage={createNotificationMessage} />
+            <CreateBlogForm
+              handleCreateNewBlog={handleCreateNewBlog}
+              blogs={blogs}
+              setBlogs={setBlogs}
+              createNotificationMessage={createNotificationMessage}
+            />
           </Togglable>
           {blogs
             .sort((a, b) => b.likes - a.likes)
-            .map(blog => (
-              <Blog 
-              key={blog.id} 
-              blog={blog}
-              blogs={blogs}
-              setBlogs={setBlogs}
-              user={user}
-              createNotificationMessage={createNotificationMessage}
+            .map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                blogs={blogs}
+                setBlogs={setBlogs}
+                user={user}
+                createNotificationMessage={createNotificationMessage}
               />
             ))}
         </div>
       )}
-
     </div>
   )
 }
