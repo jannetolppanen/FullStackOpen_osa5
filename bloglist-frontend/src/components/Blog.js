@@ -78,7 +78,7 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author} <button onClick={handleView}>view</button> <br />
       {visible && fullInfo()}
     </div>
