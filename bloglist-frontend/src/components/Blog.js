@@ -41,6 +41,9 @@ const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
 
   // returns true if blogpost belongs to logged in user
   const isBlogPostOwner = () => {
+    if (!user) {
+      return false
+    }
     return blog.user.username === user.username
   }
 
