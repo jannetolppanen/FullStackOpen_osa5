@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs, user, addLike }) => {
+const Blog = ({ blog, blogs, setBlogs, createNotificationMessage, user }) => {
   const [visible, setVisible] = useState(false)
 
   // Blog css style
@@ -16,6 +16,27 @@ const Blog = ({ blog, blogs, setBlogs, user, addLike }) => {
 
   const removeButtonStyle = {
     backgroundColor: 'red'
+  }
+
+  // Handles like button clicks
+  const handleLike = () => {
+    addLike(blog.id)
+  }
+
+  // Add like to blogpost with certain id
+  const addLike = id => {
+    const blogObject = blogs.find(b => b.id === id)
+    const changedBlog = { ...blogObject, likes: blogObject.likes + 1 }
+
+    blogService
+      .update(id, changedBlog)
+      .then(() => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
+      })
+      .catch(() => {
+        createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
+        setBlogs(blogs.filter(b => b.id !== id))
+      })
   }
 
   // returns true if blogpost belongs to logged in user
@@ -52,7 +73,7 @@ const Blog = ({ blog, blogs, setBlogs, user, addLike }) => {
     return (
       <>
         {blog.url}<br />
-        likes {blog.likes} <button onClick={() => addLike(blog.id)}>like</button> <br />
+        likes {blog.likes} <button onClick={handleLike}>like</button> <br />
         {blog.user.name}<br />
         {isBlogPostOwner() && <button style={removeButtonStyle} onClick={handleRemove}>remove</button>}
       </>

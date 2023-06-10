@@ -80,22 +80,26 @@ const App = () => {
       createNotificationMessage('wrong username or password', 'red')
     }
   }
-
-  // Blog component calls this, sends new object to server and updates blogs
-  // const handleLike = id => {
-  //   const blog = blogs.find(b => b.id === id)
-  //   const changedBlog = { ...blog, likes: blog.likes + 1 }
-
-  //   blogService
-  //     .update(id, changedBlog)
-  //     .then(returnedBlog => {
-  //       setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
-  //     })
-  //     .catch(() => {
-  //       createNotificationMessage(`Blog '${blog.title}' was already removed from the server`, 'red')
-  //       setBlogs(blogs.filter(b => b.id !== id))
-  //     })
+  // // Handle like button press
+  // const handleLike = (id) => {
+  //   addLike(id)
   // }
+
+  // Add like to blogpost with certain id
+  const addLike = id => {
+    const blogObject = blogs.find(b => b.id === id)
+    const changedBlog = { ...blogObject, likes: blogObject.likes + 1 }
+
+    blogService
+      .update(id, changedBlog)
+      .then(() => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : changedBlog))
+      })
+      .catch(() => {
+        createNotificationMessage('Blog was already removed from the server', 'red')
+        setBlogs(blogs.filter(b => b.id !== id))
+      })
+  }
 
   return (
     <div>
@@ -137,7 +141,7 @@ const App = () => {
                 blogs={blogs}
                 setBlogs={setBlogs}
                 user={user}
-                createNotificationMessage={createNotificationMessage}
+                addLike={addLike}
               />
             ))}
         </div>
