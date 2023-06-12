@@ -1,46 +1,36 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const CreateBlogForm = ({ setBlogs, createNotificationMessage, handleCreateNewBlog }) => {
+const CreateBlogForm = ({ handleCreateNewBlog, addBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const addBlog = async (event) => {
+  const newBlog = (event) => {
     event.preventDefault()
     handleCreateNewBlog()
 
     const blogObject = {
       title: title,
       author: author,
-      url: url
+      url: url,
     }
+    addBlog(blogObject)
     setTitle('')
     setAuthor('')
     setUrl('')
-    try {
-      await blogService.create(blogObject)
-      createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
-
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        createNotificationMessage('Error: Bad Request', 'red')
-      }
-    }
   }
 
   return (
     <>
-      <form onSubmit={addBlog}>
+      <form onSubmit={newBlog}>
         <div>
           <h2>create new</h2>
           title:
           <input
-            type="text"
+            type='text'
             value={title}
-            name="Title"
+            name='Title'
+            data-testid="titleInput"
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
@@ -48,9 +38,10 @@ const CreateBlogForm = ({ setBlogs, createNotificationMessage, handleCreateNewBl
         <div>
           author:
           <input
-            type="text"
+            type='text'
             value={author}
-            name="Author"
+            name='Author'
+            data-testid='authorInput'
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
@@ -58,16 +49,18 @@ const CreateBlogForm = ({ setBlogs, createNotificationMessage, handleCreateNewBl
         <div>
           url:
           <input
-            type="text"
+            type='text'
             value={url}
-            name="Url"
+            name='Url'
+            data-testid='urlInput'
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
 
-        <button type="submit">create</button>
+        <button type='submit' data-testid='submitButton'>
+          create
+        </button>
       </form>
-
     </>
   )
 }

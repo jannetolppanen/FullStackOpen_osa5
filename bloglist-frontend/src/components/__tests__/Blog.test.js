@@ -41,14 +41,8 @@ test('clicking view button shows url, likes and user', async () => {
   expect(div).toHaveTextContent('https://www.portraitintimevictorian.com')
 })
 
-// test.only('how many times view gets pressed', async () => {
-//   render(<Blog blog={blog} />)
-//   const user = userEvent.setup()
-//   const button = screen.getByText('view')
 
-// })
-
-test.only('if the Like button is clicked twice, the event handler is also called twice', () => {
+test('if the Like button is clicked twice, the event handler is also called twice', () => {
   const mockHandler = jest.fn()
   render(<Blog blog={blog} addLike={mockHandler} />)
   const viewButton = screen.getByText('view')

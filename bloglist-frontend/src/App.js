@@ -80,10 +80,6 @@ const App = () => {
       createNotificationMessage('wrong username or password', 'red')
     }
   }
-  // // Handle like button press
-  // const handleLike = (id) => {
-  //   addLike(id)
-  // }
 
   // Add like to blogpost with certain id
   const addLike = id => {
@@ -99,6 +95,21 @@ const App = () => {
         createNotificationMessage('Blog was already removed from the server', 'red')
         setBlogs(blogs.filter(b => b.id !== id))
       })
+  }
+
+  // Adds new blogs
+  const addBlog = async (blogObject) => {
+    try {
+      await blogService.create(blogObject)
+      createNotificationMessage(`blogpost ${blogObject.title} by ${blogObject.author} added`, 'green')
+
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        createNotificationMessage('Error: Bad Request', 'red')
+      }
+    }
   }
 
   return (
@@ -130,6 +141,7 @@ const App = () => {
               blogs={blogs}
               setBlogs={setBlogs}
               createNotificationMessage={createNotificationMessage}
+              addBlog={addBlog}
             />
           </Togglable>
           {blogs
