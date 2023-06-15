@@ -6,6 +6,7 @@ const logger = require('../utils/logger')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
+  console.log('blog router')
   const blogs = await Blog
     .find({}).populate('user', { "username": 1, "name": 1, "id": 1 })
   response
