@@ -1,15 +1,7 @@
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-
-    cy.request('POST', 'http://localhost:3003/api/users', {
-      username: 'testuser', name: 'Tom Tester', password: 'password'
-    }).then(response => {
-      localStorage.setItem('loggedNoteappUser', JSON.stringify(response.body))
-      cy.visit('http://localhost:3000')
-    })
-    // cypress.config.js määritelty baseUrl
-    cy.visit('http://localhost:3000/')
+    cy.createUser({ username: 'testuser', name: 'Tom Tester', password: 'password' })
   })
 
   it('Login form is shown', function () {
@@ -37,11 +29,18 @@ describe('Blog app', function () {
   })
   describe('When logged in', function() {
     beforeEach(function() {
-      // log in user here
+      cy.get('#username-form').type('testuser')
+      cy.get('#password-form').type('password')
+      cy.get('#login-button').click()
     })
 
     it('A blog can be created', function() {
-      // ...
+      cy.contains('button', 'create new blog').click()
+      cy.get('#title-input').type('My first blog')
+      cy.get('#author-input').type('Author Anna')
+      cy.get('#url-input').type('www.annasblog.com')
+      cy.get('#submit-button').click()
+      cy.contains('My first blog Author Anna')
     })
   })
 })
