@@ -42,5 +42,31 @@ describe('Blog app', function () {
       cy.get('#submit-button').click()
       cy.contains('My first blog Author Anna')
     })
+
+    it('A blog can be liked', function() {
+      cy.contains('button', 'create new blog').click()
+      cy.get('#title-input').type('My first blog')
+      cy.get('#author-input').type('Author Anna')
+      cy.get('#url-input').type('www.annasblog.com')
+      cy.get('#submit-button').click()
+      cy.get('#view-button').click()
+      cy.get('#like-button').click()
+      cy.contains('likes 1')
+    })
+
+    it('A blog can be removed by creator', function() {
+      cy.window().then((win) => {
+        cy.stub(win, 'confirm').returns(true)
+      })
+
+      cy.contains('button', 'create new blog').click()
+      cy.get('#title-input').type('My first blog')
+      cy.get('#author-input').type('Author Anna')
+      cy.get('#url-input').type('www.annasblog.com')
+      cy.get('#submit-button').click()
+      cy.get('#view-button').click()
+      cy.get('#remove-button').click()
+      cy.contains('My first blog').should('not.exist')
+    })
   })
 })

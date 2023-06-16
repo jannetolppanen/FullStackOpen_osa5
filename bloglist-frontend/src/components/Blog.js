@@ -52,16 +52,16 @@ const Blog = ({ blog, blogs, setBlogs, user, addLike }) => {
     return (
       <>
         {blog.url}<br />
-        likes {blog.likes} <button onClick={() => addLike(blog.id)}>like</button> <br />
+        likes {blog.likes} <button onClick={() => addLike(blog.id)} id='like-button'>like</button> <br />
         {blog.user.name}<br />
-        {isBlogPostOwner() && <button style={removeButtonStyle} onClick={handleRemove}>remove</button>}
+        {isBlogPostOwner() && <button style={removeButtonStyle} onClick={handleRemove} id='remove-button'>remove</button>}
       </>
     )
   }
 
   return (
     <div style={blogStyle} className='blog'>
-      {blog.title} {blog.author} <button onClick={handleView}>view</button> <br />
+      {blog.title} {blog.author} <button onClick={handleView} id='view-button'>view</button> <br />
       {visible && fullInfo()}
     </div>
   )
