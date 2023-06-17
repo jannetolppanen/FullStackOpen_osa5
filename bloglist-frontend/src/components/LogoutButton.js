@@ -1,7 +1,7 @@
 const Logoutbutton = ( { onLogout }) => {
   return (
     <>
-      <button onClick={onLogout}>Logout</button>
+      <button onClick={onLogout} id='logout-button'>Logout</button>
     </>
   )
 }
