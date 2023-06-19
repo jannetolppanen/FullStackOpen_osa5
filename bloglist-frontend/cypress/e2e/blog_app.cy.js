@@ -100,6 +100,11 @@ describe('Blog app', function () {
       cy.createBlog({ title: 'Should be 4th', author: 'Test Blogger', url: 'www.google.com', likes: 0 })
       cy.visit('http://localhost:3000')
 
+      cy.get('.blog').eq(0).should('contain', '1st')
+      cy.get('.blog').eq(1).should('contain', '2nd')
+      cy.get('.blog').eq(2).should('contain', '3rd')
+      cy.get('.blog').eq(3).should('contain', '4th')
+
     })
   })
 })
