@@ -1,2 +1,0 @@
-testiBlogilista testeille
-blogilista varsinainen appi
