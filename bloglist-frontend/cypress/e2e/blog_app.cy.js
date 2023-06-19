@@ -4,7 +4,11 @@ describe('Blog app', function () {
     cy.createUser({ username: 'testuser', name: 'Tom Tester', password: 'password' })
     cy.createUser({ username: 'testuser2', name: 'Timothy Tester', password: 'password' })
   })
-
+  // it('This is for login testing', function () {
+  //   cy.visit('http://localhost:3000')
+  //   cy.login({ username: 'testuser', password: 'password' })
+  //   cy.createBlog({ title: 'Should be first', author: 'Test Blogger', url: 'www.google.com' })
+  // })
   it('Login form is shown', function () {
     cy.contains('log in to application')
     cy.contains('username')
@@ -28,11 +32,14 @@ describe('Blog app', function () {
       cy.contains('Logged in user').should('not.exist')
     })
   })
-  describe('When logged in', function() {
+  describe.only('When logged in', function() {
     beforeEach(function() {
+      // cy.login({ username: 'testuser', password: 'password' })
+      cy.visit('http://localhost:3000')
       cy.get('#username-form').type('testuser')
       cy.get('#password-form').type('password')
       cy.get('#login-button').click()
+
     })
 
     it('A blog can be created', function() {
@@ -82,6 +89,17 @@ describe('Blog app', function () {
       cy.get('#login-button').click()
       cy.get('#view-button').click()
       cy.get('#remove-button').should('not.exist')
+    })
+  })
+  describe.only('Order of blogs is correct', function () {
+    it('Blogs are in order of likes', function() {
+      cy.login({ username: 'testuser', password: 'password' })
+      cy.createBlog({ title: 'Should be 3rd', author: 'Test Blogger', url: 'www.google.com', likes: 1 })
+      cy.createBlog({ title: 'Should be 2nd', author: 'Test Blogger', url: 'www.google.com', likes: 2 })
+      cy.createBlog({ title: 'Should be 1st', author: 'Test Blogger', url: 'www.google.com', likes: 3 })
+      cy.createBlog({ title: 'Should be 4th', author: 'Test Blogger', url: 'www.google.com', likes: 0 })
+      cy.visit('http://localhost:3000')
+
     })
   })
 })
